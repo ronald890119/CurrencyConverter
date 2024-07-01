@@ -1,6 +1,7 @@
 # Currency Converter
-The app is still under development. It will be deployed to the App Store and/or Play Store in the future.
-!(/readmeImg/preview.PNG)
+The app is still under development. It will be deployed to the App Store and/or Play Store in the future.</br>
+Here is the preview of app UI:</br>
+<img src="/readmeImg/preview.PNG" width="351" height="759">
 
 ## Functionality
 This ad-free currency converter app, written with React Native, helps you calculate currency conversions between different countries. It also supports conversions between fiat money and cryptocurrency.
