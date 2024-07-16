@@ -1,11 +1,11 @@
-import { StyleSheet, SafeAreaView, TextInput, Text } from 'react-native';
+import { StyleSheet, SafeAreaView, TextInput, Text, TouchableHighlight } from 'react-native';
 import { useEffect, useState } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
 import axios from "axios";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function HomeScreen() {
-  const[baseCurrency, setBaseCurrency] = useState(0);
+  const [baseCurrency, setBaseCurrency] = useState(0);
   const [valueBase, setValueBase] = useState(null);
 
   const data = [
@@ -19,24 +19,15 @@ export default function HomeScreen() {
     { label: 'USD🇺🇸', value: 'usd' },
   ];
   const [value, setValue] = useState(null);
-
-  const [currencyData, setCurrencyData] = useState({
-    "aud": 1.00000000,
-    "btc": 0.000010905016,
-    "doge": 5.32677499,
-    "eth": 0.00019705023,
-    "jpy": 106.78295958,
-    "twd": 21.6740334,
-    "usd": 0.66481431,
-  });
+  const [currencyData, setCurrencyData] = useState(null);
 
   let result = <Text></Text>;
 
+  // load currency data once base currency is changed
   useEffect(() => {
     axios
       .get(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${valueBase}.json`)
       .then((res) => {
-        // console.log(res.data['aud']);
         setCurrencyData(res.data[valueBase]);
       })
       .catch((err) => {
@@ -44,6 +35,7 @@ export default function HomeScreen() {
       })
   }, [valueBase]);
 
+  // round the result
   if(valueBase !== null && value !== null) {
     if(valueBase === value) {
       result = <Text style={styles.result}>{baseCurrency.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + ' ' + value.toUpperCase() + ' '} = {baseCurrency.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") + ' ' + value.toUpperCase()}</Text>;
@@ -52,13 +44,12 @@ export default function HomeScreen() {
     }
   };
 
-  // const renderItem = (item) => {
-  //   return (
-  //     <View>
-  //       <Text style={styles.selectedTextStyle}>{item.label}</Text>
-  //     </View>
-  //   );
-  // };
+  // swap the base currency and the currency to be calculated
+  const swapCurrency = () => {
+    let temp = valueBase;
+    setValueBase(value);
+    setValue(temp);
+  }
 
   return (
     <SafeAreaView style={styles.saveAreaStyle}>
@@ -86,8 +77,11 @@ export default function HomeScreen() {
         value={baseCurrency}
         keyboardType='numeric'
         placeholder='Type number'
+        defaultValue='0'
       />
-      <MaterialCommunityIcons name="arrow-up-down" style={styles.arrow} size={30} />
+      <TouchableHighlight onPress={swapCurrency}>
+        <MaterialCommunityIcons name="arrow-up-down" style={styles.arrow} size={30} />
+      </TouchableHighlight>
       <Dropdown
         style={styles.dropdown}
         placeholderStyle={styles.placeholderStyle}
